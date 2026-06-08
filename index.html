@@ -10,17 +10,20 @@
     font-family: "Vazirmatn", sans-serif;
     box-sizing: border-box;
 }
+
 body {
     margin: 0;
     direction: rtl;
     background: url("avalon.png") no-repeat center center/cover;
     color: white;
 }
+
 .overlay {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.55);
 }
+
 .container {
     position: relative;
     z-index: 2;
@@ -30,20 +33,24 @@ body {
     justify-content: center;
     align-items: center;
 }
+
 .logo {
     font-size: 42px;
     font-weight: 800;
     color: #f6d37a;
 }
+
 .title {
     font-size: 26px;
     color: #f6d37a;
 }
+
 .subtitle {
     font-size: 14px;
     opacity: 0.8;
     margin-bottom: 20px;
 }
+
 .menu-title {
     font-size: 24px;
     font-weight: bold;
@@ -52,6 +59,7 @@ body {
     text-align: center;
     margin-top: 100px;
 }
+
 .card {
     width: 340px;
     background: rgba(15,20,35,0.75);
@@ -59,9 +67,11 @@ body {
     padding: 20px;
     border-radius: 15px;
 }
+
 .input-box {
     position: relative;
 }
+
 input {
     width: 100%;
     padding: 12px;
@@ -72,33 +82,39 @@ input {
     color: white;
     transition: all 0.3s ease;
 }
+
 input:focus {
     outline: none;
     border-color: #f6d37a;
     box-shadow: 0 0 8px rgba(246, 211, 122, 0.4);
 }
+
 .eye {
     position: absolute;
     left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 4px;
     cursor: pointer;
     opacity: 0.4;
     transition: 0.2s;
 }
+
 .eye.showing {
     opacity: 1;
 }
+
 .eye svg {
     width: 24px;
     height: 24px;
 }
+
 .slash {
     transition: 0.2s;
 }
+
 .eye.showing .slash {
     opacity: 0;
 }
+
 button {
     width: 100%;
     padding: 12px;
@@ -108,19 +124,23 @@ button {
     cursor: pointer;
     font-weight: bold;
 }
+
 .main-btn {
     background: linear-gradient(90deg, #d6a94d, #f6d37a);
     color: #1a1a1a;
 }
+
 .sec-btn {
     background: transparent;
     border: 1px solid rgba(255,255,255,0.2);
     color: white;
 }
+
 #createBtn {
     background: linear-gradient(90deg, #d6a94d, #f6d37a);
     color: #1a1a1a;
 }
+
 .toast {
     position: fixed;
     top: 20px;
@@ -133,13 +153,17 @@ button {
     transition: 0.3s;
     z-index: 999;
 }
+
 .toast.show {
     opacity: 1;
     transform: translateY(0);
 }
+
 .hidden {
     display: none;
 }
+
+/* Lobby Page */
 #lobbyPage {
     position: fixed;
     inset: 0;
@@ -151,11 +175,14 @@ button {
     overflow-y: auto;
     padding: 20px 0;
 }
+
+/* دکمه‌های منوی بازی */
 #lobbyPage button {
     width: 220px;
     padding: 14px 25px;
     margin: 12px auto;
     display: block;
+
     font-size: 16px;
     font-weight: bold;
     font-family: "Vazirmatn", sans-serif;
@@ -166,9 +193,12 @@ button {
     cursor: pointer;
     text-align: center;
 }
+
+/* وقتی در صفحه اتاق هستیم، پس‌زمینه رو حذف کن */
 #lobbyPage.room-active {
     background: #0a0e1a !important;
 }
+
 #lobbyPage.room-active .room-container {
     margin: 0;
     width: 100%;
@@ -176,40 +206,51 @@ button {
     border-radius: 0;
     background: linear-gradient(135deg, #0a0e1a, #12172a);
 }
+
+/* دکمه ساخت اتاق (طلایی) */
 #lobbyPage button:first-of-type {
     background: linear-gradient(135deg, #f6d37a, #d6a94d);
     color: #1a1a1a;
     border: none;
     box-shadow: 0 4px 15px rgba(246, 211, 122, 0.3);
 }
+
+/* افکت هاور همه دکمه‌ها */
 #lobbyPage button:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(246, 211, 122, 0.4);
 }
+
 #lobbyPage button:first-of-type:hover {
     background: linear-gradient(135deg, #ffe08a, #e6b94d);
     box-shadow: 0 10px 25px rgba(246, 211, 122, 0.6);
 }
+
+/* دکمه‌های دیگه (پیوستن و بازی سریع) */
 #lobbyPage button:nth-of-type(2),
 #lobbyPage button:nth-of-type(3) {
     background: rgba(20, 25, 45, 0.8);
     backdrop-filter: blur(5px);
 }
+
 #lobbyPage button:nth-of-type(2):hover,
 #lobbyPage button:nth-of-type(3):hover {
     background: linear-gradient(135deg, #f6d37a, #d6a94d);
     color: #1a1a1a;
     border-color: transparent;
 }
+
 .lobby-logo {
     position: fixed;
-    top: 0;
+    top: -1;
     left: -20px;
     z-index: 10;
 }
+
 .lobby-logo img {
     width: 200px;
 }
+
 .menu-icons {
     position: fixed;
     top: 20px;
@@ -218,6 +259,57 @@ button {
     gap: 20px;
     z-index: 20;
 }
+
+/* بخش کد اتاق - نسخه کوچک در گوشه بالا راست */
+.room-code-section {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 8px 15px;
+    margin: 0;
+    z-index: 100;
+    width: auto;
+}
+
+.code-label {
+    display: none;
+}
+
+.code-box {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.room-code {
+    font-size: 18px;
+    font-weight: bold;
+    font-family: monospace;
+    color: #f6d37a;
+    letter-spacing: 2px;
+    background: transparent;
+    padding: 5px 0;
+}
+
+.copy-btn {
+    background: #f6d37a;
+    color: #1a1a1a;
+    padding: 4px 10px;
+    border-radius: 8px;
+    margin: 0;
+    width: auto;
+    font-size: 12px;
+}
+
+.code-hint {
+    display: none;
+}
+
 .icon {
     cursor: pointer;
     transition: all 0.3s ease;
@@ -225,10 +317,12 @@ button {
     height: 32px;
     opacity: 0.7;
 }
+
 .icon:hover {
     opacity: 1;
     transform: scale(1.1);
 }
+
 .icon svg {
     width: 100%;
     height: 100%;
@@ -236,6 +330,8 @@ button {
     stroke-width: 1.8;
     fill: none;
 }
+
+/* Room Page */
 .room-container {
     background: rgba(15, 20, 35, 0.85);
     backdrop-filter: blur(15px);
@@ -245,18 +341,22 @@ button {
     border: 1px solid rgba(246, 211, 122, 0.3);
     margin: 20px auto;
 }
+
 .room-header {
     text-align: center;
     margin-bottom: 25px;
 }
+
 .room-icon {
     font-size: 50px;
 }
+
 .room-title {
     font-size: 28px;
     font-weight: bold;
     color: #f6d37a;
 }
+
 .room-code-section {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 15px;
@@ -264,11 +364,13 @@ button {
     margin-bottom: 25px;
     text-align: center;
 }
+
 .code-label {
     font-size: 14px;
     color: #aaa;
     margin-bottom: 10px;
 }
+
 .code-box {
     display: flex;
     gap: 10px;
@@ -276,6 +378,7 @@ button {
     align-items: center;
     margin-bottom: 10px;
 }
+
 .room-code {
     font-size: 32px;
     font-weight: bold;
@@ -286,6 +389,7 @@ button {
     padding: 10px 20px;
     border-radius: 12px;
 }
+
 .copy-btn {
     background: #f6d37a;
     color: #1a1a1a;
@@ -294,20 +398,24 @@ button {
     margin: 0;
     width: auto;
 }
+
 .copy-btn:hover {
     background: #ffe08a;
     transform: scale(1.05);
 }
+
 .code-hint {
     font-size: 12px;
     color: #aaa;
 }
+
 .players-section {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 25px;
 }
+
 .players-header {
     display: flex;
     justify-content: space-between;
@@ -315,10 +423,12 @@ button {
     color: #f6d37a;
     font-weight: bold;
 }
+
 .players-list {
     max-height: 200px;
     overflow-y: auto;
 }
+
 .player-item {
     display: flex;
     align-items: center;
@@ -328,10 +438,12 @@ button {
     border-radius: 10px;
     margin-bottom: 8px;
 }
+
 .player-item.host {
     background: rgba(246, 211, 122, 0.1);
     border: 1px solid rgba(246, 211, 122, 0.3);
 }
+
 .host-badge {
     background: #f6d37a;
     color: #1a1a1a;
@@ -340,12 +452,15 @@ button {
     font-size: 10px;
     margin-right: auto;
 }
+
 .room-settings {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
     padding: 20px;
     margin-bottom: 25px;
 }
+
+/* صفحه ورود به اتاق */
 .join-room-overlay {
     position: fixed;
     inset: 0;
@@ -356,6 +471,7 @@ button {
     justify-content: center;
     align-items: center;
 }
+
 .join-room-card {
     background: rgba(15, 20, 35, 0.95);
     border-radius: 25px;
@@ -366,6 +482,7 @@ button {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 0.3s ease;
 }
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -376,15 +493,18 @@ button {
         transform: translateY(0);
     }
 }
+
 .join-room-card .room-icon {
     font-size: 50px;
     margin-bottom: 10px;
 }
+
 .join-room-card .room-title {
     font-size: 24px;
     color: #f6d37a;
     margin-bottom: 25px;
 }
+
 .join-input {
     width: 100%;
     padding: 14px;
@@ -399,40 +519,48 @@ button {
     margin-bottom: 20px;
     direction: ltr;
 }
+
 .join-input:focus {
     outline: none;
     border-color: #f6d37a;
 }
+
 .join-buttons {
     display: flex;
     gap: 15px;
     margin-top: 10px;
 }
+
 .join-buttons button {
     flex: 1;
     padding: 12px;
     font-size: 14px;
 }
+
 .close-join {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
 }
+
 .code-hint-join {
     font-size: 12px;
     color: #aaa;
     margin-top: 15px;
 }
+
 .setting-row {
     color: #f6d37a;
     font-weight: bold;
     margin-bottom: 15px;
 }
+
 .setting-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .setting-select {
     background: #0e1528;
     color: white;
@@ -441,29 +569,35 @@ button {
     padding: 5px 10px;
     cursor: pointer;
 }
+
 .room-actions {
     display: flex;
     gap: 15px;
     margin-top: 20px;
 }
+
 .start-btn, .leave-btn {
     flex: 1;
     padding: 12px;
     font-weight: bold;
 }
+
 .start-btn {
     background: linear-gradient(90deg, #f6d37a, #d6a94d);
     color: #1a1a1a;
 }
+
 .start-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
 .leave-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255,255,255,0.3);
     color: white;
 }
+
 .test-join-area {
     margin-top: 20px;
     padding: 15px;
@@ -471,11 +605,13 @@ button {
     border-radius: 12px;
     text-align: center;
 }
+
 .test-hint {
     font-size: 12px;
     color: #aaa;
     margin-bottom: 8px;
 }
+
 .test-join-button {
     width: 100%;
     background: rgba(246, 211, 122, 0.1);
@@ -486,26 +622,32 @@ button {
     border-radius: 8px;
     cursor: pointer;
 }
+
 .test-join-button:hover {
     background: rgba(246, 211, 122, 0.2);
     transform: translateY(-2px);
 }
+
 html {
     scroll-behavior: smooth;
 }
 </style>
 </head>
+
 <body>
 
 <div id="loginPage">
     <div class="overlay"></div>
     <div id="toast" class="toast"></div>
+    
     <div class="container">
         <div class="logo">AVALON</div>
         <div class="title">به دنیای آوالون خوش آمدید</div>
         <div class="subtitle">جایی که وفاداری و خیانت در کنار هم بازی می‌کنند</div>
+        
         <div class="card">
             <input id="username" placeholder="نام کاربری">
+            
             <div class="input-box">
                 <input id="pass" type="password" placeholder="رمز عبور">
                 <span class="eye" onclick="togglePass(this)">
@@ -516,6 +658,7 @@ html {
                     </svg>
                 </span>
             </div>
+            
             <button id="loginBtn" class="main-btn" onclick="login()">ورود</button>
             <button id="registerBtn" class="sec-btn" onclick="showRegister()">ثبت نام</button>
             <button id="createBtn" class="sec-btn hidden" onclick="createAccount()">ساخت حساب</button>
@@ -528,10 +671,13 @@ html {
     <div class="lobby-logo">
         <img src="avalon-logo.png" onerror="this.style.display='none'">
     </div>
+    
     <div class="menu-title">منوی بازی</div>
+
     <button onclick="createRoom()">🏰 ساخت اتاق</button>
     <button onclick="showJoinRoom()">🔗 پیوستن به اتاق</button>
     <button>⚡ بازی سریع</button>
+    
     <div class="menu-icons">
         <div class="icon" onclick="openShop()">
             <svg viewBox="0 0 24 24" fill="none">
@@ -578,6 +724,166 @@ function showRegister() {
     document.getElementById("backBtn").classList.remove("hidden");
 }
 
+function showJoinRoom() {
+    // ایجاد صفحه ورود کد
+    const overlay = document.createElement('div');
+    overlay.className = 'join-room-overlay';
+    overlay.id = 'joinOverlay';
+    
+    overlay.innerHTML = `
+        <div class="join-room-card">
+            <div class="room-icon">🔗</div>
+            <div class="room-title">پیوستن به اتاق</div>
+            
+            <input type="text" id="joinRoomCode" class="join-input" placeholder="کد 6 رقمی" maxlength="6" autocomplete="off">
+            
+            <div class="join-buttons">
+                <button class="main-btn" onclick="submitJoinRoom()">✅ پیوستن</button>
+                <button class="close-join" onclick="closeJoinModal()">❌ انصراف</button>
+            </div>
+            
+            <div class="code-hint-join">کد اتاق رو از میزبان دریافت کن</div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    setTimeout(() => {
+        const input = document.getElementById('joinRoomCode');
+        if (input) {
+            input.focus();
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitJoinRoom();
+                }
+            });
+        }
+    }, 100);
+}
+
+function closeJoinModal() {
+    const overlay = document.getElementById('joinOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+function submitJoinRoom() {
+    const roomCode = document.getElementById('joinRoomCode').value.trim();
+    
+    if (!roomCode) {
+        showToast('لطفاً کد اتاق را وارد کن', 'error');
+        return;
+    }
+    
+    if (roomCode.length !== 6 || isNaN(roomCode)) {
+        showToast('کد اتاق باید 6 رقم باشد', 'error');
+        return;
+    }
+    
+    // دریافت لیست اتاق‌ها از localStorage
+    const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
+    const room = rooms[roomCode];
+    
+    if (room) {
+        // بستن مودال
+        closeJoinModal();
+        
+        // ذخیره کد اتاق فعلی برای این کاربر
+        localStorage.setItem('currentRoom', roomCode);
+        
+        // اضافه کردن بازیکن به اتاق (اگه قبلاً نیست)
+        const currentUser = localStorage.getItem('currentUser') || 'مهمان';
+        if (!room.players.includes(currentUser)) {
+            room.players.push(currentUser);
+            rooms[roomCode] = room;
+            localStorage.setItem('rooms', JSON.stringify(rooms));
+        }
+        
+        showToast(`✅ وارد شدن به اتاق ${roomCode}`, 'success');
+        enterRoom(roomCode);
+    } else {
+        showToast('❌ کد اتاق اشتباه است! اتاقی با این کد وجود ندارد', 'error');
+        document.getElementById('joinRoomCode').value = '';
+        document.getElementById('joinRoomCode').focus();
+    }
+}
+function enterRoom(roomCode) {
+    const lobbyPage = document.getElementById('lobbyPage');
+    const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
+    const room = rooms[roomCode];
+    
+    if (!room) {
+        showToast('❌ اتاق وجود ندارد!', 'error');
+        return;
+    }
+    
+    // مخفی کردن منوی اصلی
+    const menuTitle = document.querySelector('.menu-title');
+    const menuButtons = document.querySelectorAll('#lobbyPage > button');
+    if (menuTitle) menuTitle.style.display = 'none';
+    menuButtons.forEach(btn => btn.style.display = 'none');
+    
+    lobbyPage.classList.add('room-active');
+    
+    // درست کردن لیست بازیکنان از room.players
+    let playersHtml = '';
+    room.players.forEach((player, index) => {
+        const isHost = index === 0;
+        playersHtml += `
+            <div class="player-item ${isHost ? 'host' : ''}">
+                <span>${isHost ? '👑' : '🪄'}</span>
+                <span>${player}</span>
+                ${isHost ? '<span class="host-badge">میزبان</span>' : ''}
+            </div>
+        `;
+    });
+    
+    lobbyPage.innerHTML = `
+        <div class="lobby-logo"><img src="avalon-logo.png" onerror="this.style.display='none'"></div>
+        <div class="room-container">
+            <div class="room-header">
+                <div class="room-icon">🏰</div>
+                <div class="room-title">اتاق بازی</div>
+            </div>
+            <div class="room-code-section">
+                <div class="code-label">کد اتاق</div>
+                <div class="code-box">
+                    <span class="room-code" id="roomCode">${roomCode}</span>
+                    <button class="copy-btn" onclick="copyRoomCode()">📋 کپی</button>
+                </div>
+                <div class="code-hint">این کد رو با دوستانت به اشتراک بگذار</div>
+            </div>
+            <div class="players-section">
+                <div class="players-header">
+                    <span>👥 بازیکنان</span>
+                    <span class="players-count" id="playersCount">${room.players.length}/${room.maxPlayers || 8}</span>
+                </div>
+                <div class="players-list" id="playersList">
+                    ${playersHtml}
+                </div>
+            </div>
+            <div class="room-settings">
+                <div class="setting-row">⚙️ تنظیمات اتاق</div>
+                <div class="setting-item">
+                    <span>تعداد بازیکنان:</span>
+                    <select id="maxPlayers" class="setting-select" onchange="updatePlayersCount()">
+                        <option value="6" ${(room.maxPlayers || 8) == 6 ? 'selected' : ''}>6 نفر</option>
+                        <option value="8" ${(room.maxPlayers || 8) == 8 ? 'selected' : ''}>8 نفر</option>
+                        <option value="10" ${(room.maxPlayers || 8) == 10 ? 'selected' : ''}>10 نفر</option>
+                    </select>
+                </div>
+            </div>
+            <div class="room-actions">
+                <button class="start-btn" id="startGameBtn" onclick="startGame()" ${room.players.length >= (room.maxPlayers || 8) ? '' : 'disabled'}>🚀 شروع بازی</button>
+                <button class="leave-btn" onclick="leaveRoom()">🚪 خروج از اتاق</button>
+            </div>
+        </div>
+    `;
+    
+    updatePlayersCount();
+}
+
 function backToLogin() {
     document.getElementById("loginBtn").style.display = "block";
     document.getElementById("registerBtn").style.display = "block";
@@ -588,15 +894,18 @@ function backToLogin() {
 function createAccount() {
     let username = document.getElementById("username").value;
     let password = document.getElementById("pass").value;
+    
     if (!username || !password) {
         showToast("لطفاً همه فیلدها را پر کنید", "error");
         return;
     }
+    
     let users = JSON.parse(localStorage.getItem("users") || "[]");
     if (users.find(u => u.username === username)) {
         showToast("این کاربر وجود دارد", "error");
         return;
     }
+    
     users.push({ username, password });
     localStorage.setItem("users", JSON.stringify(users));
     showToast("ثبت نام موفق ✔", "success");
@@ -608,13 +917,16 @@ function login() {
     let password = document.getElementById("pass").value;
     let users = JSON.parse(localStorage.getItem("users") || "[]");
     let found = users.find(u => u.username === username && u.password === password);
+    
     if (!found) {
         showToast("اطلاعات وارد شده اشتباه است ❌", "error");
         return;
     }
+    
     currentUser = username;
     localStorage.setItem("currentUser", username);
     showToast("ورود با موفقیت انجام شد ✔", "success");
+    
     setTimeout(() => {
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("lobbyPage").style.display = "block";
@@ -633,6 +945,8 @@ function createRoom() {
     document.querySelector('.menu-title').style.display = 'none';
     document.querySelectorAll('#lobbyPage > button').forEach(btn => btn.style.display = 'none');
     const roomCode = Math.floor(100000 + Math.random() * 900000);
+    
+    // ذخیره اطلاعات اتاق با کد
     const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
     rooms[roomCode] = {
         creator: localStorage.getItem('currentUser') || 'میزبان',
@@ -642,6 +956,7 @@ function createRoom() {
     };
     localStorage.setItem('rooms', JSON.stringify(rooms));
     localStorage.setItem('currentRoom', roomCode);
+    
     showRoomPage(roomCode);
 }
 
@@ -704,17 +1019,21 @@ function showRoomPage(roomCode) {
 function updatePlayersCount() {
     const maxPlayers = document.getElementById('maxPlayers');
     if (!maxPlayers) return;
+    
     const playersList = document.getElementById('playersList');
     const currentPlayers = playersList ? playersList.children.length : 1;
     const playersCountSpan = document.getElementById('playersCount');
     const startBtn = document.getElementById('startGameBtn');
+    
     if (playersCountSpan) {
         playersCountSpan.innerText = `${currentPlayers}/${maxPlayers.value}`;
     }
+    
     if (startBtn) {
         if (currentPlayers >= parseInt(maxPlayers.value)) {
             startBtn.disabled = false;
             startBtn.style.opacity = '1';
+            showToast('✅ تعداد بازیکنان کامل شد! میتونی بازی رو شروع کنی', 'success');
         } else {
             startBtn.disabled = true;
             startBtn.style.opacity = '0.5';
@@ -726,12 +1045,15 @@ function addTestPlayer() {
     const playersList = document.getElementById('playersList');
     const maxPlayers = document.getElementById('maxPlayers');
     if (!playersList || !maxPlayers) return;
+    
     const currentPlayers = playersList.children.length;
     const max = parseInt(maxPlayers.value);
+    
     if (currentPlayers >= max) {
         showToast('❌ ظرفیت اتاق پر شده!', 'error');
         return;
     }
+    
     const testNames = ['سارا', 'علی', 'مریم', 'رضا', 'نرگس', 'حمید', 'زهرا', 'مهدی', 'لیلا', 'حسین'];
     const usedNames = Array.from(playersList.children).map(child => {
         const text = child.innerText;
@@ -739,10 +1061,12 @@ function addTestPlayer() {
     });
     const availableNames = testNames.filter(n => !usedNames.includes(n));
     const randomName = availableNames.length ? availableNames[0] : `بازیکن ${currentPlayers + 1}`;
+    
     const newPlayer = document.createElement('div');
     newPlayer.className = 'player-item';
     newPlayer.innerHTML = `<span>🪄</span><span>${randomName}</span>`;
     playersList.appendChild(newPlayer);
+    
     updatePlayersCount();
     showToast(`${randomName} به اتاق پیوست ✅`, 'success');
 }
@@ -755,141 +1079,21 @@ function copyRoomCode() {
     }
 }
 
-function showJoinRoom() {
-    const overlay = document.createElement('div');
-    overlay.className = 'join-room-overlay';
-    overlay.id = 'joinOverlay';
-    overlay.innerHTML = `
-        <div class="join-room-card">
-            <div class="room-icon">🔗</div>
-            <div class="room-title">پیوستن به اتاق</div>
-            <input type="text" id="joinRoomCode" class="join-input" placeholder="کد 6 رقمی" maxlength="6" autocomplete="off">
-            <div class="join-buttons">
-                <button class="main-btn" onclick="submitJoinRoom()">✅ پیوستن</button>
-                <button class="close-join" onclick="closeJoinModal()">❌ انصراف</button>
-            </div>
-            <div class="code-hint-join">کد اتاق رو از میزبان دریافت کن</div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-    setTimeout(() => {
-        const input = document.getElementById('joinRoomCode');
-        if (input) input.focus();
-    }, 100);
-}
-
-function closeJoinModal() {
-    const overlay = document.getElementById('joinOverlay');
-    if (overlay) overlay.remove();
-}
-
-function submitJoinRoom() {
-    const roomCode = document.getElementById('joinRoomCode').value.trim();
-    if (!roomCode) {
-        showToast('لطفاً کد اتاق را وارد کن', 'error');
-        return;
-    }
-    if (roomCode.length !== 6 || isNaN(roomCode)) {
-        showToast('کد اتاق باید 6 رقم باشد', 'error');
-        return;
-    }
-    const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
-    const room = rooms[roomCode];
-    if (room) {
-        closeJoinModal();
-        localStorage.setItem('currentRoom', roomCode);
-        const currentUser = localStorage.getItem('currentUser') || 'مهمان';
-        if (!room.players.includes(currentUser)) {
-            room.players.push(currentUser);
-            rooms[roomCode] = room;
-            localStorage.setItem('rooms', JSON.stringify(rooms));
-        }
-        showToast(`✅ وارد شدن به اتاق ${roomCode}`, 'success');
-        enterRoom(roomCode);
-    } else {
-        showToast('❌ کد اتاق اشتباه است!', 'error');
-        document.getElementById('joinRoomCode').value = '';
-        document.getElementById('joinRoomCode').focus();
-    }
-}
-
-function enterRoom(roomCode) {
-    const lobbyPage = document.getElementById('lobbyPage');
-    const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
-    const room = rooms[roomCode];
-    if (!room) {
-        showToast('❌ اتاق وجود ندارد!', 'error');
-        return;
-    }
-    const menuTitle = document.querySelector('.menu-title');
-    const menuButtons = document.querySelectorAll('#lobbyPage > button');
-    if (menuTitle) menuTitle.style.display = 'none';
-    menuButtons.forEach(btn => btn.style.display = 'none');
-    lobbyPage.classList.add('room-active');
-    let playersHtml = '';
-    room.players.forEach((player, index) => {
-        const isHost = index === 0;
-        playersHtml += `
-            <div class="player-item ${isHost ? 'host' : ''}">
-                <span>${isHost ? '👑' : '🪄'}</span>
-                <span>${player}</span>
-                ${isHost ? '<span class="host-badge">میزبان</span>' : ''}
-            </div>
-        `;
-    });
-    lobbyPage.innerHTML = `
-        <div class="lobby-logo"><img src="avalon-logo.png" onerror="this.style.display='none'"></div>
-        <div class="room-container">
-            <div class="room-header">
-                <div class="room-icon">🏰</div>
-                <div class="room-title">اتاق بازی</div>
-            </div>
-            <div class="room-code-section">
-                <div class="code-label">کد اتاق</div>
-                <div class="code-box">
-                    <span class="room-code" id="roomCode">${roomCode}</span>
-                    <button class="copy-btn" onclick="copyRoomCode()">📋 کپی</button>
-                </div>
-                <div class="code-hint">این کد رو با دوستانت به اشتراک بگذار</div>
-            </div>
-            <div class="players-section">
-                <div class="players-header">
-                    <span>👥 بازیکنان</span>
-                    <span class="players-count" id="playersCount">${room.players.length}/${room.maxPlayers || 8}</span>
-                </div>
-                <div class="players-list" id="playersList">
-                    ${playersHtml}
-                </div>
-            </div>
-            <div class="room-settings">
-                <div class="setting-row">⚙️ تنظیمات اتاق</div>
-                <div class="setting-item">
-                    <span>تعداد بازیکنان:</span>
-                    <select id="maxPlayers" class="setting-select" onchange="updatePlayersCount()">
-                        <option value="6" ${(room.maxPlayers || 8) == 6 ? 'selected' : ''}>6 نفر</option>
-                        <option value="8" ${(room.maxPlayers || 8) == 8 ? 'selected' : ''}>8 نفر</option>
-                        <option value="10" ${(room.maxPlayers || 8) == 10 ? 'selected' : ''}>10 نفر</option>
-                    </select>
-                </div>
-            </div>
-            <div class="room-actions">
-                <button class="start-btn" id="startGameBtn" onclick="startGame()" ${room.players.length >= (room.maxPlayers || 8) ? '' : 'disabled'}>🚀 شروع بازی</button>
-                <button class="leave-btn" onclick="leaveRoom()">🚪 خروج از اتاق</button>
-            </div>
-        </div>
-    `;
-    updatePlayersCount();
-}
-
 function leaveRoom() {
     const lobbyPage = document.getElementById('lobbyPage');
     const currentRoom = localStorage.getItem('currentRoom');
+    
+    // حذف کاربر از اتاق
     if (currentRoom) {
         const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
         const room = rooms[currentRoom];
         const currentUser = localStorage.getItem('currentUser') || 'مهمان';
+        
         if (room) {
+            // حذف کاربر از لیست
             room.players = room.players.filter(p => p !== currentUser);
+            
+            // اگر اتاق خالی شد، اتاق رو حذف کن
             if (room.players.length === 0) {
                 delete rooms[currentRoom];
             } else {
@@ -898,16 +1102,24 @@ function leaveRoom() {
             localStorage.setItem('rooms', JSON.stringify(rooms));
         }
     }
+    
     localStorage.removeItem('currentRoom');
+    
+    // حذف کلاس room-active
     lobbyPage.classList.remove('room-active');
+    
+    // برگردوندن منوی اصلی
     lobbyPage.innerHTML = `
         <div class="lobby-logo">
             <img src="avalon-logo.png" onerror="this.style.display='none'">
         </div>
+        
         <div class="menu-title">منوی بازی</div>
+        
         <button onclick="createRoom()">🏰 ساخت اتاق</button>
         <button onclick="showJoinRoom()">🔗 پیوستن به اتاق</button>
         <button>⚡ بازی سریع</button>
+        
         <div class="menu-icons">
             <div class="icon" onclick="openShop()">
                 <svg viewBox="0 0 24 24" fill="none">
@@ -924,13 +1136,19 @@ function leaveRoom() {
             </div>
         </div>
     `;
+    
     showToast('از اتاق خارج شدی 🔙', 'success');
 }
+
 
 function startGame() {
     const maxPlayers = document.getElementById('maxPlayers');
     showToast(`بازی با ${maxPlayers ? maxPlayers.value : 6} نفر شروع شد! 🎮`, 'success');
 }
 </script>
+
 </body>
+<script>
+    console.log("Avalon game server is running...");
+</script>
 </html>
