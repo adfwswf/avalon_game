@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>Avalon</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    font-family: "Vazirmatn", sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    direction: rtl;
+    background: url("avalon.png") no-repeat center center/cover;
+    color: white;
+}
+
+.overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+}
+
+.container{
+    position: relative;
+    z-index: 2;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo{
+    font-size: 42px;
+    font-weight: 800;
+    color: #f6d37a;
+}
+
+.title{
+    font-size: 26px;
+    color: #f6d37a;
+}
+
+/* استایل دکمه‌های منوی بازی */
+#lobbyPage button{
+    width: 220px;
+    padding: 14px 20px;
+    margin: 12px auto;
+    display: block;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "Vazirmatn", sans-serif;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #2a2f45, #1a1f35);
+    border: 2px solid rgba(246, 211, 122, 0.4);
+    color: #f6d37a;
+    cursor: pointer;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* افکت هاور (وقتی موس میره روش) */
+#lobbyPage button:hover{
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #f6d37a, #d6a94d);
+    color: #1a1a1a;
+    box-shadow: 0 10px 25px rgba(246, 211, 122, 0.4);
+    border-color: transparent;
+}
+
+/* افکت کلیک */
+#lobbyPage button:active{
+    transform: translateY(1px);
+}
+
+/* دکمه اول (ساخت اتاق) - رنگ خاص */
+#lobbyPage button:first-of-type{
+    background: linear-gradient(135deg, #f6d37a, #d6a94d);
+    color: #1a1a1a;
+    border: none;
+}
+
+#lobbyPage button:first-of-type:hover{
+    background: linear-gradient(135deg, #ffe08a, #e6b94d);
+    box-shadow: 0 10px 25px rgba(246, 211, 122, 0.6);
+}
+
+.subtitle{
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+.menu-title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #f6d37a;
+    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+.card{
+    width: 340px;
+    background: rgba(15,20,35,0.75);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.input-box{
+    position: relative;
+}
+
+input{
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #0e1528;
+    color: white;
+}
+
+.eye{
+    position: absolute;
+    left: 10px;
+    bottom: 0px;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: 0.2s;
+}
+
+.eye.showing{
+    opacity: 1;
+}
+
+.eye svg{
+    width: 28px;
+    height: 28px;
+}
+
+.slash{
+    transition: 0.2s;
+}
+
+.eye.showing .slash{
+    opacity: 0;
+}
+
+button{
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#lobbyPage button{
+    width: 220px;
+    padding: 10px 15px;
+    margin: 8px auto;
+    display: block;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+#lobbyPage{
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: url("avalon.png") no-repeat center center/cover;
+}
+
+.menu-icons{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 20px;
+    z-index: 20;
+}
+
+.icon{
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 32px;
+    height: 32px;
+    opacity: 0.7;
+}
+
+.icon:hover{
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.icon svg{
+    width: 100%;
+    height: 100%;
+    stroke: #f6d37a;
+    stroke-width: 1.8;
+    fill: none;
+}
+
+.main-btn{
+    background: linear-gradient(90deg,#d6a94d,#f6d37a);
+    color: #1a1a1a;
+}
+
+.sec-btn{
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+}
+
+#createBtn{
+    background: linear-gradient(90deg,#d6a94d,#f6d37a);
+    color: #1a1a1a;
+}
+
+.toast{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #22c55e;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: 0.3s;
+    z-index: 999;
+}
+
+.toast.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hidden{
+    display:none;
+}
+
+.lobby-logo{
+    position: fixed;
+    top: 20px;
+    left: -5px;
+    z-index: 10;
+}
+
+.lobby-logo img{
+    width: 200px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="loginPage">
+
+<div class="overlay"></div>
+
+<div id="toast" class="toast"></div>
+
+<div class="container">
+
+    <div class="logo">AVALON</div>
+    <div class="title">به دنیای آوالون خوش آمدید</div>
+    <div class="subtitle">جایی که وفاداری و خیانت در کنار هم بازی می‌کنند</div>
+
+    <div class="card">
+
+        <input placeholder="نام کاربری">
+
+        <div class="input-box">
+            <input id="pass" type="password" placeholder="رمز عبور">
+
+            <span class="eye" onclick="togglePass(this)">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"
+                    stroke="white" stroke-width="1.8"/>
+
+                    <circle cx="12" cy="12" r="3.5"
+                    stroke="white" stroke-width="1.8"/>
+
+                    <line class="slash" x1="4" y1="20" x2="20" y2="4"
+                    stroke="white" stroke-width="2"/>
+                </svg>
+            </span>
+        </div>
+
+        <button id="loginBtn" class="main-btn" onclick="login()">ورود</button>
+
+        <button id="registerBtn" class="sec-btn" onclick="showRegister()">ثبت نام</button>
+
+        <button id="createBtn" class="sec-btn hidden" onclick="createAccount()">ساخت حساب</button>
+
+        <button id="backBtn" class="sec-btn hidden" onclick="backToLogin()">بازگشت</button>
+
+    </div>
+</div>
+</div>
+
+<!-- LOBBY -->
+<div id="lobbyPage" style="display:none;">
+    
+    <div class="lobby-logo">
+        <img src="avalon-logo.png" onerror="this.style.display='none'">
+    </div>
+
+    <div class="menu-title">منوی بازی</div>
+
+    <button>ساخت اتاق🏰</button>
+    <button>پیوستن به اتاق🚪</button>
+    <button>بازی سریع⚔️</button>
+
+</div>
+
+<div class="menu-icons">
+    <!-- آیکن فروشگاه -->
+    <div class="icon" onclick="openShop()">
+        <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6z" stroke="#f6d37a" stroke-width="1.8" fill="none"/>
+            <path d="M3 6h18" stroke="#f6d37a" stroke-width="1.8"/>
+            <path d="M16 10a4 4 0 0 1-8 0" stroke="#f6d37a" stroke-width="1.8" fill="none"/>
+        </svg>
+    </div>
+    
+    <!-- آیکن تنظیمات (چرخ دنده) -->
+    <div class="icon" onclick="openSettings()">
+        <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="3" stroke="#f6d37a" stroke-width="1.8"/>
+            <path d="M12 5.5V2M12 22v-3.5M18.5 12H22M2 12h3.5M16.5 7.5L19 5M5 19l2.5-2.5M7.5 7.5L5 5M19 19l-2.5-2.5" stroke="#f6d37a" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+    </div>
+</div>
+</div>
+<script>
+
+function togglePass(el){
+    let input = document.getElementById("pass");
+
+    if(input.type === "password"){
+        input.type = "text";
+        el.classList.add("showing");
+    } else {
+        input.type = "password";
+        el.classList.remove("showing");
+    }
+}
+
+function showToast(msg, type="success"){
+    let t = document.getElementById("toast");
+
+    t.innerText = msg;
+
+    t.style.background = (type === "error") ? "#ef4444" : "#22c55e";
+
+    t.classList.add("show");
+
+    setTimeout(()=>{
+        t.classList.remove("show");
+    },2000);
+}
+
+function showRegister(){
+    document.getElementById("loginBtn").style.display = "none";
+    document.getElementById("registerBtn").style.display = "none";
+
+    document.getElementById("createBtn").classList.remove("hidden");
+    document.getElementById("backBtn").classList.remove("hidden");
+}
+
+function backToLogin(){
+    document.getElementById("loginBtn").style.display = "block";
+    document.getElementById("registerBtn").style.display = "block";
+
+    document.getElementById("createBtn").classList.add("hidden");
+    document.getElementById("backBtn").classList.add("hidden");
+}
+
+function openShop(){
+    showToast("فروشگاه در حال راه‌اندازی...", "success");
+}
+
+function openSettings(){
+    showToast("تنظیمات در حال راه‌اندازی...", "success");
+}
+
+function createAccount(){
+
+    let username = document.querySelector('input[placeholder="نام کاربری"]').value;
+    let password = document.getElementById("pass").value;
+
+    if(!username || !password){
+        showToast("پر کن همه رو", "error");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    if(users.find(u => u.username === username)){
+        showToast("این کاربر وجود دارد", "error");
+        return;
+    }
+
+    users.push({username, password});
+    localStorage.setItem("users", JSON.stringify(users));
+
+    showToast("ثبت نام موفق ✔", "success");
+
+    setTimeout(()=>{
+        backToLogin();
+    },1200);
+}
+
+function login(){
+
+    let username = document.querySelector('input[placeholder="نام کاربری"]').value;
+    let password = document.getElementById("pass").value;
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    let found = users.find(u => u.username === username && u.password === password);
+
+    if(!found){
+        showToast("اطلاعات وارد شده اشتباه است ❌", "error");
+        return;
+    }
+
+    showToast("ورود با موفقیت انجام شد ✔", "success");
+
+    setTimeout(()=>{
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("lobbyPage").style.display = "block";
+    },800);
+}
+
+</script>
+
+</body>
+</html>
