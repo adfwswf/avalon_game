@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["nodejs"]
+
+[phases.install]
+cmds = ["npm init -y"]
+
+[start]
+cmd = "npx serve -l 3000"
