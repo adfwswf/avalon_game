@@ -98,6 +98,42 @@ input:focus {
     transition: 0.2s;
 }
 
+.waiting-message {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    margin: 15px 0;
+    font-size: 14px;
+    color: #f6d37a;
+}
+
+.waiting-progress {
+    margin: 15px 0;
+}
+
+.progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    height: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #f6d37a, #d6a94d);
+    width: 0%;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 5px;
+    color: #aaa;
+}
+
 .eye.showing {
     opacity: 1;
 }
@@ -283,6 +319,19 @@ button {
     gap: 8px;
     justify-content: center;
     align-items: center;
+    margin: 0;
+}
+
+/* دکمه‌های هم اندازه برای بازی سریع */
+.retry-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.retry-buttons button {
+    width: 100%;
     margin: 0;
 }
 
@@ -676,7 +725,7 @@ html {
 
     <button onclick="createRoom()">🏰 ساخت اتاق</button>
     <button onclick="showJoinRoom()">🔗 پیوستن به اتاق</button>
-    <button>⚡ بازی سریع</button>
+    <button onclick="quickPlay()">⚡ بازی سریع</button>
     
     <div class="menu-icons">
         <div class="icon" onclick="openShop()">
@@ -812,6 +861,7 @@ function enterRoom(roomCode) {
     const lobbyPage = document.getElementById('lobbyPage');
     const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
     const room = rooms[roomCode];
+    const currentUser = localStorage.getItem('currentUser') || 'مهمان';
     
     if (!room) {
         showToast('❌ اتاق وجود ندارد!', 'error');
@@ -826,7 +876,7 @@ function enterRoom(roomCode) {
     
     lobbyPage.classList.add('room-active');
     
-    // درست کردن لیست بازیکنان از room.players
+    // درست کردن لیست بازیکنان
     let playersHtml = '';
     room.players.forEach((player, index) => {
         const isHost = index === 0;
@@ -838,6 +888,9 @@ function enterRoom(roomCode) {
             </div>
         `;
     });
+    
+    // بررسی کن کاربر فعلی میزبان هست یا نه (اولین نفر توی لیست بازیکنان)
+    const isHost = room.players[0] === currentUser;
     
     lobbyPage.innerHTML = `
         <div class="lobby-logo"><img src="avalon-logo.png" onerror="this.style.display='none'"></div>
@@ -863,6 +916,7 @@ function enterRoom(roomCode) {
                     ${playersHtml}
                 </div>
             </div>
+            ${isHost ? `
             <div class="room-settings">
                 <div class="setting-row">⚙️ تنظیمات اتاق</div>
                 <div class="setting-item">
@@ -874,8 +928,9 @@ function enterRoom(roomCode) {
                     </select>
                 </div>
             </div>
+            ` : ''}
             <div class="room-actions">
-                <button class="start-btn" id="startGameBtn" onclick="startGame()" ${room.players.length >= (room.maxPlayers || 8) ? '' : 'disabled'}>🚀 شروع بازی</button>
+                <button class="start-btn" id="startGameBtn" onclick="startGame()" ${room.players.length >= (room.maxPlayers || 8) && isHost ? '' : 'disabled'}>🚀 شروع بازی</button>
                 <button class="leave-btn" onclick="leaveRoom()">🚪 خروج از اتاق</button>
             </div>
         </div>
@@ -883,12 +938,80 @@ function enterRoom(roomCode) {
     
     updatePlayersCount();
 }
-
 function backToLogin() {
     document.getElementById("loginBtn").style.display = "block";
     document.getElementById("registerBtn").style.display = "block";
     document.getElementById("createBtn").classList.add("hidden");
     document.getElementById("backBtn").classList.add("hidden");
+}
+
+function leaveRoom() {
+    const lobbyPage = document.getElementById('lobbyPage');
+    const currentRoom = localStorage.getItem('currentRoom');
+    
+    // پاک کردن interval های بازی سریع
+    if (quickPlayCheckInterval) clearInterval(quickPlayCheckInterval);
+    if (quickPlayCountdownInterval) clearInterval(quickPlayCountdownInterval);
+    
+    // بستن مودال‌ها
+    const quickPlayOverlay = document.getElementById('quickPlayOverlay');
+    if (quickPlayOverlay) quickPlayOverlay.remove();
+    
+    const joinOverlay = document.getElementById('joinOverlay');
+    if (joinOverlay) joinOverlay.remove();
+    
+    // حذف کاربر از اتاق معمولی
+    if (currentRoom) {
+        const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
+        const room = rooms[currentRoom];
+        const currentUser = localStorage.getItem('currentUser') || 'مهمان';
+        
+        if (room) {
+            room.players = room.players.filter(p => p !== currentUser);
+            if (room.players.length === 0) {
+                delete rooms[currentRoom];
+            } else {
+                rooms[currentRoom] = room;
+            }
+            localStorage.setItem('rooms', JSON.stringify(rooms));
+        }
+    }
+    
+    localStorage.removeItem('currentRoom');
+    
+    // حذف کلاس room-active
+    lobbyPage.classList.remove('room-active');
+    
+    // برگردوندن منوی اصلی (با innerHTML ساده)
+    lobbyPage.innerHTML = `
+        <div class="lobby-logo">
+            <img src="avalon-logo.png" onerror="this.style.display='none'">
+        </div>
+        
+        <div class="menu-title">منوی بازی</div>
+        
+        <button onclick="createRoom()">🏰 ساخت اتاق</button>
+        <button onclick="showJoinRoom()">🔗 پیوستن به اتاق</button>
+        <button onclick="quickPlay()">⚡ بازی سریع</button>
+        
+        <div class="menu-icons">
+            <div class="icon" onclick="openShop()">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6z" stroke="#f6d37a" stroke-width="1.8"/>
+                    <path d="M3 6h18" stroke="#f6d37a" stroke-width="1.8"/>
+                    <path d="M16 10a4 4 0 0 1-8 0" stroke="#f6d37a" stroke-width="1.8"/>
+                </svg>
+            </div>
+            <div class="icon" onclick="openSettings()">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="3" stroke="#f6d37a" stroke-width="1.8"/>
+                    <path d="M12 5.5V2M12 22v-3.5M18.5 12H22M2 12h3.5M16.5 7.5L19 5M5 19l2.5-2.5M7.5 7.5L5 5M19 19l-2.5-2.5" stroke="#f6d37a" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+    `;
+    
+    showToast('از اتاق خارج شدی 🔙', 'success');
 }
 
 function createAccount() {
@@ -925,6 +1048,20 @@ function login() {
     
     currentUser = username;
     localStorage.setItem("currentUser", username);
+    
+    // ========== اضافه کن ==========
+    // بررسی کن آیا بازی سریع فعال هست
+    const quickPlayActive = localStorage.getItem('quickPlayActive') === 'true';
+    const storedTargetCount = parseInt(localStorage.getItem('quickPlayTargetCount') || '0');
+    const storedPlayers = JSON.parse(localStorage.getItem('quickPlayPlayers') || '[]');
+    
+    if (quickPlayActive && storedTargetCount > 0 && !storedPlayers.includes(username)) {
+        storedPlayers.push(username);
+        localStorage.setItem('quickPlayPlayers', JSON.stringify(storedPlayers));
+        showToast(`✅ به بازی سریع ${storedTargetCount} نفره پیوستی!`, 'success');
+    }
+    // ============================
+    
     showToast("ورود با موفقیت انجام شد ✔", "success");
     
     setTimeout(() => {
@@ -946,12 +1083,12 @@ function createRoom() {
     document.querySelectorAll('#lobbyPage > button').forEach(btn => btn.style.display = 'none');
     const roomCode = Math.floor(100000 + Math.random() * 900000);
     
-    // ذخیره اطلاعات اتاق با کد
     const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
     rooms[roomCode] = {
         creator: localStorage.getItem('currentUser') || 'میزبان',
         players: [localStorage.getItem('currentUser') || 'میزبان'],
         maxPlayers: 8,
+        type: 'normal',  // اضافه شد: نوع اتاق معمولی
         createdAt: Date.now()
     };
     localStorage.setItem('rooms', JSON.stringify(rooms));
@@ -959,7 +1096,6 @@ function createRoom() {
     
     showRoomPage(roomCode);
 }
-
 function showRoomPage(roomCode) {
     const lobbyPage = document.getElementById('lobbyPage');
     const username = localStorage.getItem('currentUser') || 'میزبان';
@@ -1007,148 +1143,320 @@ function showRoomPage(roomCode) {
                 <button class="start-btn" id="startGameBtn" onclick="startGame()" disabled>🚀 شروع بازی</button>
                 <button class="leave-btn" onclick="leaveRoom()">🚪 خروج از اتاق</button>
             </div>
-            <div class="test-join-area">
-                <div class="test-hint">💡 برای تست، بازیکن جدید اضافه کن</div>
-                <button class="test-join-button" onclick="addTestPlayer()">➕ اضافه کردن بازیکن تستی</button>
-            </div>
         </div>
     `;
     updatePlayersCount();
 }
 
-function updatePlayersCount() {
-    const maxPlayers = document.getElementById('maxPlayers');
-    if (!maxPlayers) return;
+// ================ سیستم بازی سریع (بدون اتاق) ================
+let quickPlayPlayersList = [];
+let quickPlayTargetCount = 0;
+let quickPlayCheckInterval = null;
+let quickPlayCountdownInterval = null;
+let quickPlayTimeLeft = 60;
+
+function quickPlay() {
+    // پاک کردن interval قبلی
+    if (quickPlayCheckInterval) clearInterval(quickPlayCheckInterval);
+    if (quickPlayCountdownInterval) clearInterval(quickPlayCountdownInterval);
     
-    const playersList = document.getElementById('playersList');
-    const currentPlayers = playersList ? playersList.children.length : 1;
-    const playersCountSpan = document.getElementById('playersCount');
-    const startBtn = document.getElementById('startGameBtn');
+    // بستن مودال قبلی
+    const existingOverlay = document.getElementById('quickPlayOverlay');
+    if (existingOverlay) existingOverlay.remove();
+    
+    // ایجاد مودال انتخاب تعداد
+    const overlay = document.createElement('div');
+    overlay.className = 'join-room-overlay';
+    overlay.id = 'playerCountOverlay';
+    
+    overlay.innerHTML = `
+        <div class="join-room-card">
+            <div class="room-icon">⚡</div>
+            <div class="room-title">بازی سریع</div>
+            <div style="text-align: center; margin-bottom: 20px; color: #aaa;">تعداد بازیکنان مورد نظر را انتخاب کن</div>
+            <div class="join-buttons" style="flex-direction: column; gap: 10px;">
+                <button class="main-btn" onclick="startQuickPlay(6)" style="width: 100%;">6 نفره</button>
+                <button class="main-btn" onclick="startQuickPlay(8)" style="width: 100%;">8 نفره</button>
+                <button class="main-btn" onclick="startQuickPlay(10)" style="width: 100%;">10 نفره</button>
+                <button class="close-join" onclick="closePlayerCountModal()" style="width: 100%;">❌ انصراف</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+}
+
+function closePlayerCountModal() {
+    const overlay = document.getElementById('playerCountOverlay');
+    if (overlay) overlay.remove();
+}
+
+function startQuickPlay(selectedCount) {
+    closePlayerCountModal();
+    
+    // پاک کردن اطلاعات قدیمی قبل از شروع جدید
+    localStorage.removeItem('quickPlayPlayers');
+    localStorage.removeItem('quickPlayTargetCount');
+    localStorage.removeItem('quickPlayActive');
+    localStorage.removeItem('quickPlayStartTime');
+    localStorage.removeItem('quickPlayDuration');
+    
+    quickPlayTargetCount = selectedCount;
+    const currentUser = localStorage.getItem('currentUser') || 'مهمان';
+    
+    // خود کاربر رو به لیست اضافه کن
+    quickPlayPlayersList = [currentUser];
+    
+    // ذخیره در localStorage برای بقیه کاربرا
+    localStorage.setItem('quickPlayPlayers', JSON.stringify(quickPlayPlayersList));
+    localStorage.setItem('quickPlayTargetCount', quickPlayTargetCount);
+    localStorage.setItem('quickPlayActive', 'true');
+    
+    // ذخیره زمان شروع
+    localStorage.setItem('quickPlayStartTime', Date.now());
+    localStorage.setItem('quickPlayDuration', '60');
+    
+    // نمایش مودال انتظار
+    showQuickPlayWaitingModal();
+    
+    // شروع چک کردن برای بازیکنان جدید
+    startQuickPlayChecking();
+}
+function showQuickPlayWaitingModal() {
+    const existingOverlay = document.getElementById('quickPlayOverlay');
+    if (existingOverlay) existingOverlay.remove();
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'join-room-overlay';
+    overlay.id = 'quickPlayOverlay';
+    
+    overlay.innerHTML = `
+        <div class="join-room-card">
+            <div class="room-icon">⚡</div>
+            <div class="room-title">بازی سریع <span id="quickPlayTimer" style="color: #f6d37a;">(60)</span></div>
+            
+            <div class="quick-status" id="quickStatus" style="text-align: center; padding: 15px; color: #f6d37a;">
+                🔍 در انتظار پیوستن بازیکنان...
+            </div>
+            
+            <div class="players-section" style="margin-top: 15px;">
+                <div class="players-header">
+                    <span>👥 بازیکنان</span>
+                    <span class="players-count" id="quickPlayersCount">${quickPlayPlayersList.length}/${quickPlayTargetCount}</span>
+                </div>
+                <div class="players-list" id="quickPlayersList">
+                    <!-- لیست بازیکنان اینجا پر میشه -->
+                </div>
+            </div>
+            
+            <div class="waiting-progress" style="margin: 15px 0;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="quickProgressFill" style="width: ${(quickPlayPlayersList.length / quickPlayTargetCount) * 100}%"></div>
+                </div>
+                <div class="progress-text" id="quickProgressText">${quickPlayPlayersList.length} / ${quickPlayTargetCount} نفر</div>
+            </div>
+            
+            <div class="join-buttons">
+                <button class="close-join" onclick="closeQuickPlayModal()">❌ انصراف</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // نمایش لیست بازیکنان
+    updateQuickPlayModalList();
+    
+    // شروع تایمر 60 ثانیه
+    startQuickPlayTimer();
+}
+
+function updateQuickPlayModalList() {
+    const playersListDiv = document.getElementById('quickPlayersList');
+    const playersCountSpan = document.getElementById('quickPlayersCount');
+    const progressFill = document.getElementById('quickProgressFill');
+    const progressText = document.getElementById('quickProgressText');
+    
+    if (!playersListDiv) return;
+    
+    if (quickPlayPlayersList.length === 0) {
+        playersListDiv.innerHTML = '<div style="text-align: center; padding: 10px; color: #aaa;">در انتظار پیوستن بازیکنان...</div>';
+    } else {
+        let playersHtml = '';
+        quickPlayPlayersList.forEach((player) => {
+            playersHtml += `
+                <div class="player-item">
+                    <span>🪄</span>
+                    <span>${player}</span>
+                </div>
+            `;
+        });
+        playersListDiv.innerHTML = playersHtml;
+    }
     
     if (playersCountSpan) {
-        playersCountSpan.innerText = `${currentPlayers}/${maxPlayers.value}`;
+        playersCountSpan.innerText = `${quickPlayPlayersList.length}/${quickPlayTargetCount}`;
     }
     
-    if (startBtn) {
-        if (currentPlayers >= parseInt(maxPlayers.value)) {
-            startBtn.disabled = false;
-            startBtn.style.opacity = '1';
-            showToast('✅ تعداد بازیکنان کامل شد! میتونی بازی رو شروع کنی', 'success');
-        } else {
-            startBtn.disabled = true;
-            startBtn.style.opacity = '0.5';
+    const percent = (quickPlayPlayersList.length / quickPlayTargetCount) * 100;
+    if (progressFill) progressFill.style.width = `${percent}%`;
+    if (progressText) progressText.innerText = `${quickPlayPlayersList.length} / ${quickPlayTargetCount} نفر`;
+    
+    // اگه تعداد کامل شد
+    if (quickPlayPlayersList.length >= quickPlayTargetCount) {
+        const statusDiv = document.getElementById('quickStatus');
+        if (statusDiv) {
+            statusDiv.innerHTML = `🎉 همه بازیکنان جمع شدن! در حال شروع بازی...`;
+            statusDiv.style.color = '#22c55e';
         }
-    }
-}
-
-function addTestPlayer() {
-    const playersList = document.getElementById('playersList');
-    const maxPlayers = document.getElementById('maxPlayers');
-    if (!playersList || !maxPlayers) return;
-    
-    const currentPlayers = playersList.children.length;
-    const max = parseInt(maxPlayers.value);
-    
-    if (currentPlayers >= max) {
-        showToast('❌ ظرفیت اتاق پر شده!', 'error');
-        return;
-    }
-    
-    const testNames = ['سارا', 'علی', 'مریم', 'رضا', 'نرگس', 'حمید', 'زهرا', 'مهدی', 'لیلا', 'حسین'];
-    const usedNames = Array.from(playersList.children).map(child => {
-        const text = child.innerText;
-        return text.split(' ')[1] || text.split(' ')[0];
-    });
-    const availableNames = testNames.filter(n => !usedNames.includes(n));
-    const randomName = availableNames.length ? availableNames[0] : `بازیکن ${currentPlayers + 1}`;
-    
-    const newPlayer = document.createElement('div');
-    newPlayer.className = 'player-item';
-    newPlayer.innerHTML = `<span>🪄</span><span>${randomName}</span>`;
-    playersList.appendChild(newPlayer);
-    
-    updatePlayersCount();
-    showToast(`${randomName} به اتاق پیوست ✅`, 'success');
-}
-
-function copyRoomCode() {
-    const roomCode = document.getElementById('roomCode');
-    if (roomCode) {
-        navigator.clipboard.writeText(roomCode.innerText);
-        showToast('✅ کد اتاق کپی شد!', 'success');
-    }
-}
-
-function leaveRoom() {
-    const lobbyPage = document.getElementById('lobbyPage');
-    const currentRoom = localStorage.getItem('currentRoom');
-    
-    // حذف کاربر از اتاق
-    if (currentRoom) {
-        const rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
-        const room = rooms[currentRoom];
-        const currentUser = localStorage.getItem('currentUser') || 'مهمان';
         
-        if (room) {
-            // حذف کاربر از لیست
-            room.players = room.players.filter(p => p !== currentUser);
+        // توقف همه interval‌ها
+        if (quickPlayCheckInterval) clearInterval(quickPlayCheckInterval);
+        if (quickPlayCountdownInterval) clearInterval(quickPlayCountdownInterval);
+        
+        // بعد از 2 ثانیه بره به صفحه بازی
+        setTimeout(() => {
+            closeQuickPlayModal();
+            startQuickPlayGame();
+        }, 2000);
+    }
+}
+
+function startQuickPlayTimer() {
+    // پاک کردن interval قبلی
+    if (quickPlayCountdownInterval) clearInterval(quickPlayCountdownInterval);
+    
+    quickPlayCountdownInterval = setInterval(() => {
+        const startTime = parseInt(localStorage.getItem('quickPlayStartTime') || '0');
+        const duration = parseInt(localStorage.getItem('quickPlayDuration') || '60');
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        let timeLeft = Math.max(0, duration - elapsed);
+        
+        const timerSpan = document.getElementById('quickPlayTimer');
+        if (timerSpan) {
+            timerSpan.innerText = `(${timeLeft})`;
+        }
+        
+        // وقتی زمان به 0 رسید
+        if (timeLeft <= 0) {
+            clearInterval(quickPlayCountdownInterval);
             
-            // اگر اتاق خالی شد، اتاق رو حذف کن
-            if (room.players.length === 0) {
-                delete rooms[currentRoom];
-            } else {
-                rooms[currentRoom] = room;
+            // پاک کردن اطلاعات بازی سریع
+            localStorage.removeItem('quickPlayPlayers');
+            localStorage.removeItem('quickPlayTargetCount');
+            localStorage.removeItem('quickPlayActive');
+            localStorage.removeItem('quickPlayStartTime');
+            localStorage.removeItem('quickPlayDuration');
+            
+            // تغییر محتوای مودال
+            const statusDiv = document.getElementById('quickStatus');
+            const playersSection = document.querySelector('#quickPlayOverlay .players-section');
+            const progressSection = document.querySelector('#quickPlayOverlay .waiting-progress');
+            const joinButtons = document.querySelector('#quickPlayOverlay .join-buttons');
+            
+            if (statusDiv) {
+                statusDiv.innerHTML = '⏰ زمان به پایان رسید! بازی تشکیل نشد.';
+                statusDiv.style.color = '#ef4444';
+                statusDiv.style.fontSize = '16px';
+                statusDiv.style.fontWeight = 'bold';
             }
-            localStorage.setItem('rooms', JSON.stringify(rooms));
+            
+            // مخفی کردن بخش بازیکنان و نوار پیشرفت
+            if (playersSection) playersSection.style.display = 'none';
+            if (progressSection) progressSection.style.display = 'none';
+            
+            // اضافه کردن دکمه‌های هم اندازه
+            if (joinButtons) {
+                joinButtons.innerHTML = `
+                    <div class="retry-buttons">
+                        <button class="main-btn" onclick="retryQuickPlay()" style="width: 100%;">🔄 تلاش دوباره</button>
+                        <button class="close-join" onclick="closeQuickPlayModal()" style="width: 100%;">❌ انصراف</button>
+                    </div>
+                `;
+            }
         }
+    }, 1000);
+}
+function retryQuickPlay() {
+    // بستن مودال فعلی
+    closeQuickPlayModal();
+    
+    // شروع مجدد بازی سریع با همان تعداد
+    const targetCount = quickPlayTargetCount;
+    if (targetCount > 0) {
+        // پاک کردن کامل اطلاعات قدیمی
+        localStorage.removeItem('quickPlayPlayers');
+        localStorage.removeItem('quickPlayTargetCount');
+        localStorage.removeItem('quickPlayActive');
+        localStorage.removeItem('quickPlayStartTime');
+        localStorage.removeItem('quickPlayDuration');
+        
+        // شروع جدید
+        setTimeout(() => {
+            startQuickPlay(targetCount);
+        }, 100);
+    } else {
+        // اگه تعداد مشخص نیست، برو به صفحه انتخاب
+        quickPlay();
     }
+}
+function startQuickPlayChecking() {
+    if (quickPlayCheckInterval) clearInterval(quickPlayCheckInterval);
     
-    localStorage.removeItem('currentRoom');
-    
-    // حذف کلاس room-active
-    lobbyPage.classList.remove('room-active');
-    
-    // برگردوندن منوی اصلی
-    lobbyPage.innerHTML = `
-        <div class="lobby-logo">
-            <img src="avalon-logo.png" onerror="this.style.display='none'">
-        </div>
+    quickPlayCheckInterval = setInterval(() => {
+        // چک کن مودال هنوز باز هست
+        if (!document.getElementById('quickPlayOverlay')) {
+            clearInterval(quickPlayCheckInterval);
+            return;
+        }
         
-        <div class="menu-title">منوی بازی</div>
+        // گرفتن لیست از localStorage
+        const storedPlayers = JSON.parse(localStorage.getItem('quickPlayPlayers') || '[]');
+        const storedTargetCount = parseInt(localStorage.getItem('quickPlayTargetCount') || '0');
         
-        <button onclick="createRoom()">🏰 ساخت اتاق</button>
-        <button onclick="showJoinRoom()">🔗 پیوستن به اتاق</button>
-        <button>⚡ بازی سریع</button>
-        
-        <div class="menu-icons">
-            <div class="icon" onclick="openShop()">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6z" stroke="#f6d37a" stroke-width="1.8"/>
-                    <path d="M3 6h18" stroke="#f6d37a" stroke-width="1.8"/>
-                    <path d="M16 10a4 4 0 0 1-8 0" stroke="#f6d37a" stroke-width="1.8"/>
-                </svg>
-            </div>
-            <div class="icon" onclick="openSettings()">
-                <svg viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="3" stroke="#f6d37a" stroke-width="1.8"/>
-                    <path d="M12 5.5V2M12 22v-3.5M18.5 12H22M2 12h3.5M16.5 7.5L19 5M5 19l2.5-2.5M7.5 7.5L5 5M19 19l-2.5-2.5" stroke="#f6d37a" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-            </div>
-        </div>
-    `;
-    
-    showToast('از اتاق خارج شدی 🔙', 'success');
+        // اگه تعداد تغییر کرد و مودال باز هست
+        if (storedTargetCount === quickPlayTargetCount && storedPlayers.length > quickPlayPlayersList.length) {
+            quickPlayPlayersList = storedPlayers;
+            updateQuickPlayModalList();
+        }
+    }, 1000);
 }
 
-
-function startGame() {
-    const maxPlayers = document.getElementById('maxPlayers');
-    showToast(`بازی با ${maxPlayers ? maxPlayers.value : 6} نفر شروع شد! 🎮`, 'success');
+function closeQuickPlayModal() {
+    if (quickPlayCheckInterval) {
+        clearInterval(quickPlayCheckInterval);
+        quickPlayCheckInterval = null;
+    }
+    if (quickPlayCountdownInterval) {
+        clearInterval(quickPlayCountdownInterval);
+        quickPlayCountdownInterval = null;
+    }
+    
+    const overlay = document.getElementById('quickPlayOverlay');
+    if (overlay) overlay.remove();
+    
+    // پاک کردن کامل اطلاعات بازی سریع
+    localStorage.removeItem('quickPlayPlayers');
+    localStorage.removeItem('quickPlayTargetCount');
+    localStorage.removeItem('quickPlayActive');
+    localStorage.removeItem('quickPlayStartTime');
+    localStorage.removeItem('quickPlayDuration');
+    
+    // ریست کردن متغیرها
+    quickPlayPlayersList = [];
+    quickPlayTargetCount = 0;
+}
+function startQuickPlayGame() {
+    // پاک کردن اطلاعات بازی سریع از localStorage
+    localStorage.removeItem('quickPlayPlayers');
+    localStorage.removeItem('quickPlayTargetCount');
+    localStorage.removeItem('quickPlayActive');
+    localStorage.removeItem('quickPlayStartTime');
+    localStorage.removeItem('quickPlayDuration');
+    
+    // ... بقیه کد همینطور بمونه ...
 }
 </script>
 
 </body>
-<script>
-    console.log("Avalon game server is running...");
-</script>
 </html>
